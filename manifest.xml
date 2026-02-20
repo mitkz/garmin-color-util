@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<iq:manifest version="3" xmlns:iq="http://www.garmin.com/xml/connectiq">
+  <iq:application
+    id="d0d4f35d-16ff-4c5f-8f6d-3f0676f67df9"
+    entry="ColorProbeApp"
+    name="@Strings.AppName"
+    launcherIcon="@Drawables.LauncherIcon"
+    type="watch-app"
+    minApiLevel="3.0.0">
+    <iq:products>
+      <iq:product id="vivoactive5" />
+    </iq:products>
+    <iq:permissions />
+    <iq:languages>
+      <iq:language>eng</iq:language>
+      <iq:language>jpn</iq:language>
+    </iq:languages>
+  </iq:application>
+</iq:manifest>
