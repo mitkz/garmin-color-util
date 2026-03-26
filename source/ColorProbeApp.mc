@@ -1,5 +1,6 @@
 using Toybox.Application;
 using Toybox.Graphics;
+using Toybox.Lang;
 using Toybox.WatchUi;
 
 class ColorProbeApp extends Application.AppBase {
@@ -8,20 +9,21 @@ class ColorProbeApp extends Application.AppBase {
         AppBase.initialize();
     }
 
-    function onStart(state as Dictionary?) as Void {
+    function onStart(state as Lang.Dictionary?) as Void {
     }
 
-    function onStop(state as Dictionary?) as Void {
+    function onStop(state as Lang.Dictionary?) as Void {
     }
 
-    function getInitialView() as [Views] or [Views, InputDelegates] {
+    function getInitialView() as [WatchUi.Views] or [WatchUi.Views, WatchUi.InputDelegates] {
         var view = new ColorProbeView();
         return [view, new ColorProbeDelegate(view)];
     }
 }
 
+const STEP_LARGE = 20;
+
 class ColorProbeView extends WatchUi.View {
-    const STEP_LARGE = 20;
 
     var _channels = ["R", "G", "B", "BG R", "BG G", "BG B"];
 
@@ -43,14 +45,14 @@ class ColorProbeView extends WatchUi.View {
         View.initialize();
     }
 
-    function onLayout(dc as Dc) as Void {
+    function onLayout(dc as Graphics.Dc) as Void {
     }
 
-    function onUpdate(dc as Dc) as Void {
+    function onUpdate(dc as Graphics.Dc) as Void {
         _updateSquareBounds(dc.getWidth(), dc.getHeight());
 
-        var bgColor = Graphics.createColor(_bgR, _bgG, _bgB);
-        var squareColor = Graphics.createColor(_r, _g, _b);
+        var bgColor = Graphics.createColor(255, _bgR, _bgG, _bgB);
+        var squareColor = Graphics.createColor(255, _r, _g, _b);
         var textColor = _textColorForBackground();
 
         dc.setColor(bgColor, bgColor);
@@ -78,7 +80,7 @@ class ColorProbeView extends WatchUi.View {
         WatchUi.requestUpdate();
     }
 
-    function adjustSelected(delta as Number) as Void {
+    function adjustSelected(delta as Lang.Number) as Void {
         if (_selectedChannel == 0) {
             _r = _clamp(_r + delta);
         } else if (_selectedChannel == 1) {
@@ -96,33 +98,37 @@ class ColorProbeView extends WatchUi.View {
         WatchUi.requestUpdate();
     }
 
-    function getSquareLeft() as Number {
+    function getSquareLeft() as Lang.Number {
         return _squareLeft;
     }
 
-    function getSquareTop() as Number {
+    function getSquareTop() as Lang.Number {
         return _squareTop;
     }
 
-    function getSquareRight() as Number {
+    function getSquareRight() as Lang.Number {
         return _squareLeft + _squareSize;
     }
 
-    function getSquareBottom() as Number {
+    function getSquareBottom() as Lang.Number {
         return _squareTop + _squareSize;
     }
 
-    function isInsideSquare(x as Number, y as Number) as Boolean {
+    function isInsideSquare(x as Lang.Number, y as Lang.Number) as Lang.Boolean {
         return x >= getSquareLeft() && x <= getSquareRight() && y >= getSquareTop() && y <= getSquareBottom();
     }
 
-    function _updateSquareBounds(width as Number, height as Number) as Void {
-        _squareSize = (width < height ? width : height) * 0.42;
+    function _updateSquareBounds(width as Lang.Number, height as Lang.Number) as Void {
+        var minDim = width;
+        if (height < width) {
+            minDim = height;
+        }
+        _squareSize = (minDim * 42 / 100).toNumber();
         _squareLeft = (width - _squareSize) / 2;
         _squareTop = (height - _squareSize) / 2;
     }
 
-    function _textColorForBackground() as ColorType {
+    function _textColorForBackground() as Graphics.ColorType {
         var brightness = ((_bgR * 299) + (_bgG * 587) + (_bgB * 114)) / 1000;
         if (brightness >= 140) {
             return Graphics.COLOR_BLACK;
@@ -130,7 +136,7 @@ class ColorProbeView extends WatchUi.View {
         return Graphics.COLOR_WHITE;
     }
 
-    function _clamp(value as Number) as Number {
+    function _clamp(value as Lang.Number) as Lang.Number {
         if (value < 0) {
             return 0;
         }
@@ -149,7 +155,7 @@ class ColorProbeDelegate extends WatchUi.BehaviorDelegate {
         _view = view;
     }
 
-    function onTap(clickEvent as ClickEvent) as Boolean {
+    function onTap(clickEvent as WatchUi.ClickEvent) as Lang.Boolean {
         var point = clickEvent.getCoordinates();
         var x = point[0];
         var y = point[1];
@@ -160,12 +166,12 @@ class ColorProbeDelegate extends WatchUi.BehaviorDelegate {
         }
 
         if (y < _view.getSquareTop()) {
-            _view.adjustSelected(ColorProbeView.STEP_LARGE);
+            _view.adjustSelected(STEP_LARGE);
             return true;
         }
 
         if (y > _view.getSquareBottom()) {
-            _view.adjustSelected(-ColorProbeView.STEP_LARGE);
+            _view.adjustSelected(-STEP_LARGE);
             return true;
         }
 
