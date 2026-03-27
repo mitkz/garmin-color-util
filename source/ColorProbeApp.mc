@@ -64,15 +64,13 @@ class ColorProbeView extends WatchUi.View {
         dc.setColor(textColor, bgColor);
         dc.drawRectangle(_squareLeft, _squareTop, _squareSize, _squareSize);
 
-        var title = "Tap square: next channel";
         var selected = "Editing: " + _channels[_selectedChannel];
-        var values = "RGB " + _r + "," + _g + "," + _b + "  BG " + _bgR + "," + _bgG + "," + _bgB;
-        var guide = "Top:+20 Bottom:-20 Left:-1 Right:+1";
+        var fg_values = "FG " + _r + "," + _g + "," + _b;
+        var bg_values = "BG " + _bgR + "," + _bgG + "," + _bgB;
 
-        dc.drawText(dc.getWidth() / 2, 8, Graphics.FONT_XTINY, title, Graphics.TEXT_JUSTIFY_CENTER);
-        dc.drawText(dc.getWidth() / 2, 26, Graphics.FONT_XTINY, selected, Graphics.TEXT_JUSTIFY_CENTER);
-        dc.drawText(dc.getWidth() / 2, dc.getHeight() - 30, Graphics.FONT_XTINY, values, Graphics.TEXT_JUSTIFY_CENTER);
-        dc.drawText(dc.getWidth() / 2, dc.getHeight() - 14, Graphics.FONT_XTINY, guide, Graphics.TEXT_JUSTIFY_CENTER);
+        dc.drawText(dc.getWidth() / 2, 36, Graphics.FONT_XTINY, selected, Graphics.TEXT_JUSTIFY_CENTER);
+        dc.drawText(dc.getWidth() / 2, dc.getHeight() - 70, Graphics.FONT_XTINY, fg_values, Graphics.TEXT_JUSTIFY_CENTER);
+        dc.drawText(dc.getWidth() / 2, dc.getHeight() - 40, Graphics.FONT_XTINY, bg_values, Graphics.TEXT_JUSTIFY_CENTER);
     }
 
     function cycleChannel() as Void {
