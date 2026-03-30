@@ -25,8 +25,6 @@ const STEP_LARGE = 20;
 
 class ColorProbeView extends WatchUi.View {
 
-    var _channels as Lang.Array<Lang.String> = ["R", "G", "B", "BG R", "BG G", "BG B"];
-
     var _r = 255;
     var _g = 0;
     var _b = 0;
@@ -64,17 +62,61 @@ class ColorProbeView extends WatchUi.View {
         dc.setColor(textColor, bgColor);
         dc.drawRectangle(_squareLeft, _squareTop, _squareSize, _squareSize);
 
-        var selected = "Editing: " + _channels[_selectedChannel];
-        var fg_values = "FG " + _r + "," + _g + "," + _b;
-        var bg_values = "BG " + _bgR + "," + _bgG + "," + _bgB;
+        var font = Graphics.FONT_XTINY;
+        var centerX = dc.getWidth() / 2;
+        var fontHeight = dc.getFontHeight(font);
+        var pad = 2;
 
-        dc.drawText(dc.getWidth() / 2, 36, Graphics.FONT_XTINY, selected, Graphics.TEXT_JUSTIFY_CENTER);
-        dc.drawText(dc.getWidth() / 2, dc.getHeight() - 70, Graphics.FONT_XTINY, fg_values, Graphics.TEXT_JUSTIFY_CENTER);
-        dc.drawText(dc.getWidth() / 2, dc.getHeight() - 40, Graphics.FONT_XTINY, bg_values, Graphics.TEXT_JUSTIFY_CENTER);
+        // FG line
+        var rStr = _r.format("%3d");
+        var gStr = _g.format("%3d");
+        var bStr = _b.format("%3d");
+        var fgText = "FG " + rStr + "," + gStr + "," + bStr;
+        var fgY = 36;
+        var fgStartX = centerX - dc.getTextWidthInPixels(fgText, font) / 2;
+        dc.drawText(fgStartX, fgY, font, fgText, Graphics.TEXT_JUSTIFY_LEFT);
+
+        if (_selectedChannel < 3) {
+            _drawHighlight(dc, font, fgStartX, fgY, fontHeight, pad,
+                "FG ", rStr, gStr, bStr, _selectedChannel);
+        }
+
+        // BG line
+        var bgRStr = _bgR.format("%3d");
+        var bgGStr = _bgG.format("%3d");
+        var bgBStr = _bgB.format("%3d");
+        var bgText = "BG " + bgRStr + "," + bgGStr + "," + bgBStr;
+        var bgY = fgY + fontHeight + 4;
+        var bgStartX = centerX - dc.getTextWidthInPixels(bgText, font) / 2;
+        dc.drawText(bgStartX, bgY, font, bgText, Graphics.TEXT_JUSTIFY_LEFT);
+
+        if (_selectedChannel >= 3) {
+            _drawHighlight(dc, font, bgStartX, bgY, fontHeight, pad,
+                "BG ", bgRStr, bgGStr, bgBStr, _selectedChannel - 3);
+        }
+    }
+
+    function _drawHighlight(dc as Graphics.Dc, font as Graphics.FontType,
+            startX as Lang.Number, y as Lang.Number, fontHeight as Lang.Number, pad as Lang.Number,
+            prefix as Lang.String, rStr as Lang.String, gStr as Lang.String, bStr as Lang.String,
+            idx as Lang.Number) as Void {
+        var beforeWidth = 0;
+        var valWidth = 0;
+        if (idx == 0) {
+            beforeWidth = dc.getTextWidthInPixels(prefix, font);
+            valWidth = dc.getTextWidthInPixels(rStr, font);
+        } else if (idx == 1) {
+            beforeWidth = dc.getTextWidthInPixels(prefix + rStr + ",", font);
+            valWidth = dc.getTextWidthInPixels(gStr, font);
+        } else {
+            beforeWidth = dc.getTextWidthInPixels(prefix + rStr + "," + gStr + ",", font);
+            valWidth = dc.getTextWidthInPixels(bStr, font);
+        }
+        dc.drawRectangle(startX + beforeWidth - pad, y - pad, valWidth + pad * 2, fontHeight + pad * 2);
     }
 
     function cycleChannel() as Void {
-        _selectedChannel = (_selectedChannel + 1) % _channels.size();
+        _selectedChannel = (_selectedChannel + 1) % 6;
         WatchUi.requestUpdate();
     }
 
