@@ -25,7 +25,7 @@ const STEP_LARGE = 20;
 
 class ColorProbeView extends WatchUi.View {
 
-    var _channels = ["R", "G", "B", "BG R", "BG G", "BG B"];
+    var _channels as Lang.Array<Lang.String> = ["R", "G", "B", "BG R", "BG G", "BG B"];
 
     var _r = 255;
     var _g = 0;
@@ -184,6 +184,18 @@ class ColorProbeDelegate extends WatchUi.BehaviorDelegate {
         }
 
         return false;
+    }
+
+    function onKey(keyEvent as WatchUi.KeyEvent) as Lang.Boolean {
+        if (keyEvent.getKey() == WatchUi.KEY_ENTER) {
+            WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
+            return true;
+        }
+        return false;
+    }
+
+    function onBack() as Lang.Boolean {
+        return true;
     }
 }
 
