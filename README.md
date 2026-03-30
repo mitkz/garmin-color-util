@@ -1,27 +1,44 @@
 # garmin-color-util
 
-Garmin vivoactive 5 の OLED 実機で色の見え方を確認するための Connect IQ アプリです。
+A Connect IQ app for previewing colors on the Garmin vivoactive 5 OLED display.
 
-## 仕様
+## Features
 
-- 背景色と中央正方形の色を独立して設定
-- 中央正方形タップで編集対象を切り替え
-	- `R` → `G` → `B` → `背景R` → `背景G` → `背景B` → 繰り返し
-- 正方形の上をタップ: 選択中の値を `+20`
-- 正方形の下をタップ: 選択中の値を `-20`
-- 正方形の左をタップ: 選択中の値を `-1`
-- 正方形の右をタップ: 選択中の値を `+1`
-- 値は `0..255` にクランプ
+- Independently set the foreground (square) color and background color
+- FG and BG RGB values are displayed at the top of the screen
+- The currently selected channel is highlighted with a rectangle
+- Tap the center square to cycle through channels: `FG R` → `FG G` → `FG B` → `BG R` → `BG G` → `BG B`
+- Tap above the square: selected value `+20`
+- Tap below the square: selected value `-20`
+- Tap left of the square: selected value `-1`
+- Tap right of the square: selected value `+1`
+- Values are clamped to `0..255`
+- Press the action (enter) button to exit the app
+- Swipe-back gesture is disabled to prevent accidental exits
 
-## ビルド
+## Build
 
-Connect IQ SDK をインストールし、`monkeyc` コマンドが使える状態で実行します。
+Install the Connect IQ SDK, then run:
 
-```bash
-monkeyc -f monkey.jungle -d vivoactive5 -o bin/OledColorProbe.prg -y /path/to/developer_key
+```powershell
+./deploy.ps1 -Action Build
 ```
 
-## 実行
+Or build manually:
 
-- Connect IQ Simulator で `vivoactive5` を選択して読み込み
-- または実機へ転送して動作確認
+```bash
+monkeyc -f monkey.jungle -d vivoactive5 -o bin/ColorFinder.prg -y /path/to/developer_key
+```
+
+## Deploy
+
+To build and deploy to a connected device via MTP:
+
+```powershell
+./deploy.ps1
+```
+
+## Run
+
+- Load the `.prg` file in the Connect IQ Simulator with the `vivoactive5` device
+- Or transfer to the device for on-hardware testing
