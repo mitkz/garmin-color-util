@@ -195,6 +195,10 @@ class ColorProbeDelegate extends WatchUi.BehaviorDelegate {
         _view = view;
     }
 
+    function onBack() as Lang.Boolean {
+        return true;
+    }
+
     function onTap(clickEvent as WatchUi.ClickEvent) as Lang.Boolean {
         var point = clickEvent.getCoordinates();
         var x = point[0];
